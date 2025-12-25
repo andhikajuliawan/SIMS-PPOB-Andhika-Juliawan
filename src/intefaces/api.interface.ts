@@ -1,4 +1,4 @@
-export interface ApiInterface<T = null> {
+export interface ApiResponse<T = null> {
   status: number;
   message: string;
   data: T;

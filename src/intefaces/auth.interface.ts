@@ -1,4 +1,4 @@
-import type { ApiInterface } from './api.interface.ts';
+import type { ApiResponse } from './api.interface.ts';
 
 export interface LoginRequest {
   email: string;
@@ -9,7 +9,7 @@ export interface LoginData {
     token: string;
 }
 
-export type LoginResponse = ApiInterface<LoginData>;
+export type LoginResponse = ApiResponse<LoginData>;
 
 export interface RegisterRequest {
   email: string;
@@ -18,7 +18,7 @@ export interface RegisterRequest {
   password: string;
 }
 
-export type RegisterResponse = ApiInterface;
+export type RegisterResponse = ApiResponse;
 
 export interface Auth {
   token: string | null;

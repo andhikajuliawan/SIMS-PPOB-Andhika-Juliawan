@@ -37,6 +37,8 @@ function App() {
     { path: '*', element: <Navigate to="/" /> },
   ]);
 
+  
+
   return (
     <>
       <Provider store={store}>
