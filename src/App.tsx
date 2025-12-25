@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { store } from './store.ts';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import MainLayout from './layouts/MainLayout.tsx';
+import Account from './pages/Account/Account.tsx';
 
 function App() {
   const router = createBrowserRouter([
@@ -16,7 +17,10 @@ function App() {
       children: [
         {
           element: <MainLayout />,
-          children: [{ path: '/', element: <Home /> }],
+          children: [
+            { path: '/', element: <Home /> },
+            { path: '/account', element: <Account /> },
+          ],
         },
       ],
     },
