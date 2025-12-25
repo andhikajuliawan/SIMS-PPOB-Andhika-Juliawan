@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
-import { useAppDispatch } from '../../hooks.ts';
+import { useAppDispatch } from '../../features/hooks.ts';
 import { logout } from '../../features/auth/authSlice.ts';
 import { useNavigate } from 'react-router';
 

@@ -2,7 +2,9 @@ import api from '../env/axiosInstance.ts';
 import type {
   LoginRequest,
   LoginResponse,
-} from '../intefaces/authInterface.ts';
+  RegisterRequest,
+  RegisterResponse,
+} from '../intefaces/auth.interface.ts';
 
 export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -10,4 +12,13 @@ export const authService = {
     return response.data;
   },
 
+  register: async (
+    credentials: RegisterRequest
+  ): Promise<RegisterResponse> => {
+    const response = await api.post<RegisterResponse>(
+      '/registration',
+      credentials
+    );
+    return response.data;
+  },
 };

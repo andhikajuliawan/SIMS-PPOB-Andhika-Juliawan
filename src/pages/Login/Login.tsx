@@ -1,40 +1,48 @@
 import {
   Box,
   Button,
+  CircularProgress,
   InputAdornment,
   Link,
   TextField,
   Typography,
-  useTheme,
+  IconButton
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import logo from '/Logo.png';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { LoginRequest } from '../../intefaces/authInterface.ts';
+import type { LoginRequest } from '../../intefaces/auth.interface.ts';
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '../../services/authService.ts';
 import type { AxiosError } from 'axios';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../../features/auth/authSlice.ts';
 import { useNavigate } from 'react-router';
+import { enqueueSnackbar } from 'notistack';
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
       dispatch(setToken(data.data.token));
+      enqueueSnackbar(data.message, {
+        variant: 'success',
+        autoHideDuration: 2000,
+      });
       navigate('/');
     },
-    onError: () => {
-      setIsErrorClose(false);
+    onError: (error: AxiosError<{ message: string }>) => {
+      enqueueSnackbar(error.response?.data.message, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     },
   });
 
@@ -43,12 +51,11 @@ function Login() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginRequest>({
-    mode: 'onBlur',
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
   });
 
-  const theme = useTheme();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isErrorClose, setIsErrorClose] = useState<boolean>(true);
 
   const onSubmit = (data: LoginRequest) => {
     mutate(data);
@@ -121,6 +128,7 @@ function Login() {
               pattern: { value: /^\S+@\S+$/i, message: 'Format email salah' },
             })}
             autoComplete="email"
+            size="small"
             error={!!errors.email}
             helperText={errors.email?.message?.toString() || ''}
             slotProps={{
@@ -143,6 +151,7 @@ function Login() {
               minLength: { value: 8, message: 'Minimal 8 karakter' },
             })}
             autoComplete="current-password"
+            size="small"
             error={!!errors.password}
             helperText={errors.password?.message?.toString() || ''}
             slotProps={{
@@ -153,16 +162,17 @@ function Login() {
                   </InputAdornment>
                 ),
                 endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    sx={{ cursor: 'pointer' }}
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  >
-                    {isPasswordVisible ? (
-                      <RemoveRedEyeOutlinedIcon />
-                    ) : (
-                      <VisibilityOffOutlinedIcon />
-                    )}
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                      edge="end"
+                    >
+                      {isPasswordVisible ? (
+                        <RemoveRedEyeOutlinedIcon />
+                      ) : (
+                        <VisibilityOffOutlinedIcon />
+                      )}
+                    </IconButton>
                   </InputAdornment>
                 ),
               },
@@ -175,9 +185,14 @@ function Login() {
             disabled={!isValid || isPending}
             sx={{
               paddingY: '.4rem',
+              mt: '1rem',
             }}
           >
-            Masuk
+            {isPending ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Masuk'
+            )}
           </Button>
         </Box>
         <Typography
@@ -197,39 +212,6 @@ function Login() {
             disini
           </Link>
         </Typography>
-
-        {error && !isErrorClose && (
-          <Box
-            sx={{
-              backgroundColor: theme.palette.primary.light,
-              color: theme.palette.primary.contrastText,
-              borderRadius: 1,
-              px: 1,
-              py: 1,
-              width: '50%',
-              position: 'absolute',
-              bottom: 50,
-              minWidth: '300px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography variant="caption">
-              {
-                (error as AxiosError<{ message: string }>)?.response?.data
-                  ?.message
-              }
-            </Typography>
-            <CloseIcon
-              fontSize="small"
-              sx={{
-                cursor: 'pointer',
-              }}
-              onClick={() => setIsErrorClose(!isErrorClose)}
-            />
-          </Box>
-        )}
       </Box>
     </Box>
   );

@@ -5,12 +5,15 @@ import AuthLayout from './layouts/AuthLayout.tsx';
 import Login from './pages/Login/Login.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
-import { store } from './store.ts';
+import { store } from './features/store.ts';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import MainLayout from './layouts/MainLayout.tsx';
 import Account from './pages/Account/Account.tsx';
+import Register from './pages/Register/Register.tsx';
+import { SnackbarProvider } from 'notistack';
 
 function App() {
+  const queryClient = new QueryClient();
   const router = createBrowserRouter([
     {
       element: <ProtectedRoute />,
@@ -26,17 +29,21 @@ function App() {
     },
     {
       element: <AuthLayout />,
-      children: [{ path: '/login', element: <Login /> }],
+      children: [
+        { path: '/login', element: <Login /> },
+        { path: '/register', element: <Register /> },
+      ],
     },
     { path: '*', element: <Navigate to="/" /> },
   ]);
-  const queryClient = new QueryClient();
 
   return (
     <>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <SnackbarProvider hideIconVariant>
+            <RouterProvider router={router} />
+          </SnackbarProvider>
         </QueryClientProvider>
       </Provider>
     </>

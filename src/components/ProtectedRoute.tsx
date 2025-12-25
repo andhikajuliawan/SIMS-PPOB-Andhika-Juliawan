@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router';
-import { useAppSelector } from '../hooks.ts';
+import { useAppSelector } from '../features/hooks.ts';
 import { selectAuth } from '../features/auth/authSlice.ts';
 
 function ProtectedRoute() {
