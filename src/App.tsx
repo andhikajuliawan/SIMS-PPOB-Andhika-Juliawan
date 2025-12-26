@@ -12,6 +12,7 @@ import Account from './pages/Account/Account.tsx';
 import Register from './pages/Register/Register.tsx';
 import { SnackbarProvider } from 'notistack';
 import Service from './pages/Service/Service.tsx';
+import TopUp from './pages/TopUp/TopUp.tsx';
 
 function App() {
   const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ function App() {
             { path: '/', element: <Home /> },
             { path: '/account', element: <Account /> },
             { path: '/service/:service_name', element: <Service /> },
+            { path: '/top-up', element: <TopUp /> },
           ],
         },
       ],

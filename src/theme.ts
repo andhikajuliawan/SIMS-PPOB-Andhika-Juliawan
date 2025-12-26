@@ -8,6 +8,9 @@ const theme = createTheme({
       dark: '#C62828',
       contrastText: '#fff',
     },
+    secondary: {
+      main: '#757575',
+    },
   },
   typography: {
     button: {

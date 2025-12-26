@@ -7,9 +7,18 @@ import { userService } from '../services/user.service.ts';
 import { useEffect } from 'react';
 import { setUser, setUserLoading } from '../features/user/userSlice.ts';
 
+interface NavProps {
+  title: string;
+  path: string;
+}
+
 function MainLayout() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const listNavigation: NavProps[] = [
+    { title: 'Top Up', path: '/top-up' },
+    { title: 'Akun', path: '/account' },
+  ];
 
   const { data, isLoading } = useQuery({
     queryKey: ['profile'],
@@ -61,24 +70,30 @@ function MainLayout() {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: '2rem' }}>
-          <NavLink to="/account" style={{ textDecoration: 'none' }}>
-            {({ isActive }) => (
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  fontWeight: isActive ? '600' : '500',
-                  color: isActive ? 'primary.main' : 'black',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    color: 'primary.main',
-                    cursor: 'pointer',
-                  },
-                }}
-              >
-                Akun
-              </Typography>
-            )}
-          </NavLink>
+          {listNavigation.map((item, index) => (
+            <NavLink
+              to={item.path}
+              style={{ textDecoration: 'none' }}
+              key={index}
+            >
+              {({ isActive }) => (
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: isActive ? '600' : '500',
+                    color: isActive ? 'primary.main' : 'black',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      color: 'primary.main',
+                      cursor: 'pointer',
+                    },
+                  }}
+                >
+                  {item.title}
+                </Typography>
+              )}
+            </NavLink>
+          ))}
         </Box>
       </Box>
 
