@@ -6,7 +6,7 @@ export const userService = {
     const response = await api.get('/profile');
     return response.data;
   },
-  putUser: async (payload: UserRequest): Promise<UserResponse> => {
+  updateUser: async (payload: UserRequest): Promise<UserResponse> => {
     const response = await api.put('/profile/update', payload);
     return response.data;
   },

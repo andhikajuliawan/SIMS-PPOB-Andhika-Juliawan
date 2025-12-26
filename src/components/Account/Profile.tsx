@@ -2,8 +2,8 @@ import { Avatar, IconButton, Skeleton, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import profilePicture from '/assets/account/profile.png';
-import { useAppSelector } from '../../features/hooks.ts';
-import { selectUser } from '../../features/user/userSlice.ts';
+import { useAppDispatch, useAppSelector } from '../../features/hooks.ts';
+import { selectUser, setProfileImage } from '../../features/user/userSlice.ts';
 import { type ChangeEvent, useRef } from 'react';
 import { enqueueSnackbar } from 'notistack';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,6 +12,7 @@ import type { AxiosError } from 'axios';
 import { grey } from '@mui/material/colors';
 
 function Profile() {
+  const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { first_name, last_name, profile_image, isLoading } =
@@ -22,6 +23,7 @@ function Profile() {
       return userService.updateProfileImage(formData);
     },
     onSuccess: (data) => {
+      dispatch(setProfileImage(data.data.profile_image));
       void queryClient.invalidateQueries({ queryKey: ['profile'] });
       enqueueSnackbar(data.message, {
         variant: 'success',

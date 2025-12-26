@@ -27,8 +27,8 @@ function FormEdit() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const { email, first_name, last_name, isLoading } =
     useAppSelector(selectUser);
-  const { mutate, isPending } = useMutation({
-    mutationFn: userService.putUser,
+  const { mutate: updateUser, isPending } = useMutation({
+    mutationFn: userService.updateUser,
     onSuccess: (data) => {
       enqueueSnackbar(data.message, {
         variant: 'success',
@@ -55,7 +55,7 @@ function FormEdit() {
   });
 
   const onSubmit = (formData: UserRequest) => {
-    mutate(formData);
+    updateUser(formData);
   };
 
   const handleLogout = () => {
