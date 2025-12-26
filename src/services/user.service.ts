@@ -1,9 +1,17 @@
-import type { UserRequest, UserResponse } from '../intefaces/user.interface.ts';
+import type {
+  BalanceResponse,
+  UserRequest,
+  UserResponse,
+} from '../intefaces/user.interface.ts';
 import api from './axiosInstance.ts';
 
 export const userService = {
   getUser: async (): Promise<UserResponse> => {
     const response = await api.get('/profile');
+    return response.data;
+  },
+  getUserBalance: async (): Promise<BalanceResponse> => {
+    const response = await api.get('/balance');
     return response.data;
   },
   updateUser: async (payload: UserRequest): Promise<UserResponse> => {

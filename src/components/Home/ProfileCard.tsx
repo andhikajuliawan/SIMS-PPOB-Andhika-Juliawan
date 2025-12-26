@@ -1,0 +1,108 @@
+import Box from '@mui/material/Box';
+import { useQuery } from '@tanstack/react-query';
+import { userService } from '../../services/user.service.ts';
+import { useEffect, useState } from 'react';
+import {
+  selectUser,
+  setBalance,
+  setBalanceLoading,
+} from '../../features/user/userSlice.ts';
+import { useDispatch } from 'react-redux';
+import { Avatar, IconButton, Skeleton, Typography } from '@mui/material';
+import backgroundSaldo from '/assets/account/background-saldo.png';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { grey } from '@mui/material/colors';
+import { useAppSelector } from '../../features/hooks.ts';
+import { getValidProfileImage } from '../../utils/imageHelper.ts';
+
+function ProfileCard() {
+  const dispatch = useDispatch();
+  const { first_name, last_name, profile_image, isLoadingUser } =
+    useAppSelector(selectUser);
+  const [showBalance, setShowBalance] = useState(true);
+
+  const { data: balanceData, isLoading: balanceLoading } = useQuery({
+    queryKey: ['balance'],
+    queryFn: userService.getUserBalance,
+  });
+
+  useEffect(() => {
+    if (!balanceLoading && balanceData) {
+      dispatch(setBalance(balanceData.data.balance));
+    }
+    dispatch(setBalanceLoading(balanceLoading));
+  }, [balanceData, dispatch, balanceLoading]);
+  return (
+    <Box
+      sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
+    >
+      <Box>
+        {isLoadingUser ? (
+          <Skeleton variant="circular" width={70} height={70} sx={{ mb: 2 }} />
+        ) : (
+          <Avatar
+            alt="avatar"
+            src={getValidProfileImage(profile_image)}
+            sx={{ width: 70, height: 70, mb: 2 }}
+          />
+        )}
+
+        <Typography variant="h6" fontWeight="500">
+          Selamat datang,
+        </Typography>
+        <Typography
+          variant="h5"
+          fontWeight="600"
+          sx={{ textTransform: 'capitalize' }}
+        >
+          {isLoadingUser ? <Skeleton /> : `${first_name} ${last_name}`}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          backgroundImage: `url(${backgroundSaldo})`,
+          px: 3,
+          py: 2,
+          width: '100%',
+          maxWidth: '600px',
+          minWidth: '300px',
+          borderRadius: 4,
+          color: grey[50],
+        }}
+      >
+        <Box>
+          <Typography variant="subtitle2" fontWeight="500">
+            Saldo Anda
+          </Typography>
+          <Typography variant="h4" fontWeight="600">
+            {balanceLoading ? (
+              <Skeleton width={200} />
+            ) : (
+              `Rp ${showBalance ? balanceData?.data.balance.toLocaleString('id-ID') : '•••••••'}`
+            )}
+          </Typography>
+        </Box>
+        <Typography variant="subtitle2" fontWeight="500">
+          lihat saldo{' '}
+          <IconButton
+            size="small"
+            sx={{ color: grey[50] }}
+            onClick={() => setShowBalance(!showBalance)}
+          >
+            {showBalance ? (
+              <VisibilityOutlinedIcon fontSize="inherit" />
+            ) : (
+              <VisibilityOffOutlinedIcon fontSize="inherit" />
+            )}
+          </IconButton>
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+export default ProfileCard;

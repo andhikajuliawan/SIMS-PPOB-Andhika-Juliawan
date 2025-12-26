@@ -1,7 +1,6 @@
 import { Avatar, IconButton, Skeleton, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
-import profilePicture from '/assets/account/profile.png';
 import { useAppDispatch, useAppSelector } from '../../features/hooks.ts';
 import { selectUser, setProfileImage } from '../../features/user/userSlice.ts';
 import { type ChangeEvent, useRef } from 'react';
@@ -10,12 +9,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '../../services/user.service.ts';
 import type { AxiosError } from 'axios';
 import { grey } from '@mui/material/colors';
+import { getValidProfileImage } from '../../utils/imageHelper.ts';
 
 function Profile() {
   const dispatch = useAppDispatch();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  const { first_name, last_name, profile_image, isLoading } =
+  const { first_name, last_name, profile_image, isLoadingUser } =
     useAppSelector(selectUser);
 
   const { mutate: updateProfileImage, isPending } = useMutation({
@@ -37,13 +37,6 @@ function Profile() {
       });
     },
   });
-  const getProfileImage = () => {
-    const apiImage = profile_image;
-    if (!apiImage || apiImage.includes('/null')) {
-      return profilePicture;
-    }
-    return apiImage;
-  };
 
   const handleEditClick = () => {
     fileInputRef.current?.click();
@@ -76,13 +69,13 @@ function Profile() {
         gap: '.5rem',
       }}
     >
-      {isLoading || isPending ? (
+      {isLoadingUser || isPending ? (
         <Skeleton variant="circular" width={120} height={120} />
       ) : (
         <Box sx={{ position: 'relative' }}>
           <Avatar
             alt="avatar"
-            src={getProfileImage()}
+            src={getValidProfileImage(profile_image)}
             sx={{ width: 120, height: 120 }}
           />
           <IconButton
@@ -112,7 +105,11 @@ function Profile() {
       )}
 
       <Typography variant="h5" sx={{ fontWeight: 500 }}>
-        {isLoading ? <Skeleton width={200} /> : `${first_name}  ${last_name}`}
+        {isLoadingUser ? (
+          <Skeleton width={200} />
+        ) : (
+          `${first_name}  ${last_name}`
+        )}
       </Typography>
     </Box>
   );

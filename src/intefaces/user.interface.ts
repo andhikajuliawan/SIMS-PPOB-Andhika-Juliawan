@@ -5,7 +5,16 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_image: string;
-  isLoading: boolean;
+  balance: number;
+  isLoadingUser: boolean;
+  isLoadingBalance: boolean;
+}
+
+export interface UserData {
+  email: string;
+  first_name: string;
+  last_name: string;
+  profile_image: string;
 }
 
 export interface UserRequest {
@@ -14,6 +23,10 @@ export interface UserRequest {
   last_name: string;
 }
 
-export type UserResponse = ApiResponse<User>;
+export type UserResponse = ApiResponse<UserData>;
 
-export type SetUserPayloadAction = Omit<User, 'isLoading'>;
+interface BalanceData {
+  balance: number;
+}
+
+export type BalanceResponse = ApiResponse<BalanceData>;

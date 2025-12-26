@@ -25,7 +25,7 @@ function FormEdit() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const { email, first_name, last_name, isLoading } =
+  const { email, first_name, last_name, isLoadingUser } =
     useAppSelector(selectUser);
   const { mutate: updateUser, isPending } = useMutation({
     mutationFn: userService.updateUser,
@@ -69,7 +69,7 @@ function FormEdit() {
       first_name,
       last_name,
     });
-  }, [email, first_name, isLoading, last_name, reset]);
+  }, [email, first_name, isLoadingUser, last_name, reset]);
   return (
     <>
       <Box
@@ -81,7 +81,7 @@ function FormEdit() {
           gap: '1.5rem',
         }}
       >
-        {isLoading ? (
+        {isLoadingUser ? (
           <Skeleton variant="rounded" height={40} />
         ) : (
           <TextField
@@ -108,7 +108,7 @@ function FormEdit() {
           />
         )}
 
-        {isLoading ? (
+        {isLoadingUser ? (
           <Skeleton variant="rounded" height={40} />
         ) : (
           <TextField
@@ -134,7 +134,7 @@ function FormEdit() {
           />
         )}
 
-        {isLoading ? (
+        {isLoadingUser ? (
           <Skeleton variant="rounded" height={40} />
         ) : (
           <TextField
@@ -165,7 +165,7 @@ function FormEdit() {
             variant="contained"
             type="submit"
             fullWidth
-            disabled={!isValid || isPending || isLoading}
+            disabled={!isValid || isPending || isLoadingUser}
             sx={{
               paddingY: '.4rem',
               mt: '1rem',
@@ -184,7 +184,7 @@ function FormEdit() {
           <Button
             variant="outlined"
             fullWidth
-            disabled={isLoading}
+            disabled={isLoadingUser}
             sx={{
               paddingY: '.4rem',
               mt: '1.5rem',
@@ -196,7 +196,7 @@ function FormEdit() {
           <Button
             variant="contained"
             fullWidth
-            disabled={isLoading}
+            disabled={isLoadingUser}
             sx={{
               paddingY: '.4rem',
               mt: '1rem',
