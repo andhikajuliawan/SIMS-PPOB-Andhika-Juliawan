@@ -2,31 +2,51 @@ import ProfileCard from '../../components/Home/ProfileCard.tsx';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { informationService } from '../../services/information.service.ts';
 import { useParams } from 'react-router';
-import { useForm } from 'react-hook-form';
-import { Button, InputAdornment } from '@mui/material';
+import { Button, CircularProgress, InputAdornment } from '@mui/material';
 import PaymentIcon from '@mui/icons-material/Payment';
-import type { TransactionRequest } from '../../intefaces/transaction.interface.ts';
 import { useAppSelector } from '../../features/hooks.ts';
 import { selectUser } from '../../features/user/userSlice.ts';
+import { transactionService } from '../../services/transaction.service.ts';
+import { enqueueSnackbar } from 'notistack';
+import type { AxiosError } from 'axios';
+import type { FormEvent } from 'react';
 
 function Service() {
   const { service_name } = useParams();
   const { balance } = useAppSelector(selectUser);
+  const queryClient = useQueryClient();
   const { data: servicesData, isLoading: serviceLoading } = useQuery({
     queryKey: ['services'],
     queryFn: informationService.getServices,
+  });
+  const { mutate, isPending } = useMutation({
+    mutationFn: transactionService.transaction,
+    onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: ['balance'] });
+      enqueueSnackbar(data.message, {
+        variant: 'success',
+        autoHideDuration: 2000,
+      });
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      enqueueSnackbar(error.response?.data.message, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
+    },
   });
   const service =
     servicesData?.data.find(
       (service) => service.service_code === service_name
     ) || null;
 
-  const { register, handleSubmit } = useForm<TransactionRequest>();
-
-  const onSubmit = () => {};
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    mutate({ service_code: service?.service_code || '' });
+  };
 
   return (
     <Box
@@ -67,12 +87,9 @@ function Service() {
             {service?.service_name}
           </Typography>
         </Box>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Box component="form" onSubmit={(e) => onSubmit(e)}>
           <TextField
             fullWidth
-            {...register('service_code', {
-              required: 'Nominal wajib diisi',
-            })}
             value={service?.service_tariff.toLocaleString('id-ID')}
             disabled
             size="small"
@@ -98,12 +115,17 @@ function Service() {
             type="submit"
             variant="contained"
             disabled={
-              (service?.service_tariff ?? 0) > balance && !serviceLoading
+              ((service?.service_tariff ?? 0) > balance && !serviceLoading) ||
+              isPending
             }
             fullWidth
             sx={{ mt: 3 }}
           >
-            Bayar
+            {isPending ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Bayar'
+            )}
           </Button>
         </Box>
       </Box>
