@@ -1,18 +1,66 @@
-import { Avatar, Skeleton, Typography } from '@mui/material';
+import { Avatar, IconButton, Skeleton, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import Box from '@mui/material/Box';
 import profilePicture from '/assets/account/profile.png';
 import { useAppSelector } from '../../features/hooks.ts';
 import { selectUser } from '../../features/user/userSlice.ts';
+import { type ChangeEvent, useRef } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { userService } from '../../services/user.service.ts';
+import type { AxiosError } from 'axios';
+import { grey } from '@mui/material/colors';
 
 function Profile() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
   const { first_name, last_name, profile_image, isLoading } =
     useAppSelector(selectUser);
+
+  const { mutate: updateProfileImage, isPending } = useMutation({
+    mutationFn: (formData: FormData) => {
+      return userService.updateProfileImage(formData);
+    },
+    onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: ['profile'] });
+      enqueueSnackbar(data.message, {
+        variant: 'success',
+        autoHideDuration: 2000,
+      });
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      enqueueSnackbar(error.response?.data.message, {
+        variant: 'error',
+        autoHideDuration: 2000,
+      });
+    },
+  });
   const getProfileImage = () => {
     const apiImage = profile_image;
     if (!apiImage || apiImage.includes('/null')) {
       return profilePicture;
     }
     return apiImage;
+  };
+
+  const handleEditClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        enqueueSnackbar('Ukuran file maksimal 1mb', { variant: 'error' });
+        event.target.value = '';
+        return;
+      } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        console.log(file);
+        updateProfileImage(formData);
+      }
+    }
   };
 
   return (
@@ -26,14 +74,39 @@ function Profile() {
         gap: '.5rem',
       }}
     >
-      {isLoading ? (
-        <Skeleton variant="circular" width={100} height={100} />
+      {isLoading || isPending ? (
+        <Skeleton variant="circular" width={120} height={120} />
       ) : (
-        <Avatar
-          alt="avatar"
-          src={getProfileImage()}
-          sx={{ width: 100, height: 100 }}
-        />
+        <Box sx={{ position: 'relative' }}>
+          <Avatar
+            alt="avatar"
+            src={getProfileImage()}
+            sx={{ width: 120, height: 120 }}
+          />
+          <IconButton
+            size="small"
+            sx={{
+              position: 'absolute',
+              bottom: -5,
+              right: 4,
+              border: `.5px solid ${grey[400]}`,
+              backgroundColor: grey[50],
+              '&:hover': {
+                backgroundColor: grey[200],
+              },
+            }}
+            onClick={handleEditClick}
+          >
+            <EditIcon fontSize="inherit" />
+          </IconButton>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/png, image/jpeg"
+            style={{ display: 'none' }}
+          />
+        </Box>
       )}
 
       <Typography variant="h5" sx={{ fontWeight: 500 }}>

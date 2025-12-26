@@ -26,8 +26,11 @@ export const userSlice = createSlice({
     setUserLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+    setProfileImage: (state, action: PayloadAction<string>) => {
+      state.profile_image = action.payload;
+    }
   },
 });
 
-export const { setUser, setUserLoading } = userSlice.actions;
+export const { setUser, setUserLoading, setProfileImage } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;

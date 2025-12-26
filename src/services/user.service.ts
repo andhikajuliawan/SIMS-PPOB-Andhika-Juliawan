@@ -9,5 +9,9 @@ export const userService = {
   putUser: async (payload: UserRequest): Promise<UserResponse> => {
     const response = await api.put('/profile/update', payload);
     return response.data;
+  },
+  updateProfileImage: async (payload: FormData): Promise<UserResponse> => {
+    const response = await api.put('/profile/image', payload);
+    return response.data;
   }
 };
