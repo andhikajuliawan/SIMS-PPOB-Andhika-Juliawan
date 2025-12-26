@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { userService } from '../services/user.service.ts';
 import { useEffect } from 'react';
 import { setUser, setUserLoading } from '../features/user/userSlice.ts';
+import SideBar from '../components/SideBar.tsx';
 
 interface NavProps {
   title: string;
@@ -17,7 +18,7 @@ function MainLayout() {
   const dispatch = useAppDispatch();
   const listNavigation: NavProps[] = [
     { title: 'Top Up', path: '/top-up' },
-    { title: 'Transaction', path: '/transaction'},
+    { title: 'Transaction', path: '/transaction' },
     { title: 'Akun', path: '/account' },
   ];
 
@@ -70,7 +71,12 @@ function MainLayout() {
             SIMS PPOB
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: '2rem' }}>
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            gap: '2rem',
+          }}
+        >
           {listNavigation.map((item, index) => (
             <NavLink
               to={item.path}
@@ -95,6 +101,13 @@ function MainLayout() {
               )}
             </NavLink>
           ))}
+        </Box>
+        <Box
+          sx={{
+            display: { xs: 'block', md: 'none' },
+          }}
+        >
+          <SideBar />
         </Box>
       </Box>
 
