@@ -11,6 +11,7 @@ import MainLayout from './layouts/MainLayout.tsx';
 import Account from './pages/Account/Account.tsx';
 import Register from './pages/Register/Register.tsx';
 import { SnackbarProvider } from 'notistack';
+import Service from './pages/Service/Service.tsx';
 
 function App() {
   const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ function App() {
           children: [
             { path: '/', element: <Home /> },
             { path: '/account', element: <Account /> },
+            { path: '/service/:service_name', element: <Service /> },
           ],
         },
       ],
@@ -37,7 +39,7 @@ function App() {
     { path: '*', element: <Navigate to="/" /> },
   ]);
 
-  
+
 
   return (
     <>

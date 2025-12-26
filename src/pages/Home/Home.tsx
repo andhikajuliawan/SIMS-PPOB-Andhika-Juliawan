@@ -3,8 +3,10 @@ import ProfileCard from '../../components/Home/ProfileCard.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { informationService } from '../../services/information.service.ts';
 import { Skeleton, Typography } from '@mui/material';
+import { useNavigate } from 'react-router';
 
 function Home() {
+  const navigate = useNavigate();
   const { data: servicesData, isLoading: serviceLoading } = useQuery({
     queryKey: ['services'],
     queryFn: informationService.getServices,
@@ -53,8 +55,11 @@ function Home() {
                   minWidth: '70px',
                   textAlign: 'center',
                   cursor: 'pointer',
-                  pb: 2,
+                  '&:hover': {
+                    scale: 0.9
+                  }
                 }}
+                onClick={()=> navigate(`/service/${service.service_code}`)}
               >
                 <Box
                   component="img"
