@@ -37,7 +37,11 @@ function ProfileCard() {
     <Box
       sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
     >
-      <Box>
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+        }}
+      >
         {isLoadingUser ? (
           <Skeleton variant="circular" width={70} height={70} sx={{ mb: 2 }} />
         ) : (
@@ -67,7 +71,7 @@ function ProfileCard() {
           backgroundImage: `url(${backgroundSaldo})`,
           px: 3,
           py: 2,
-          width: '100%',
+          width: { xs: '100%', sm: '60%', md: '70%' },
           maxWidth: '600px',
           minWidth: '300px',
           borderRadius: 4,
@@ -75,9 +79,27 @@ function ProfileCard() {
         }}
       >
         <Box>
-          <Typography variant="subtitle2" fontWeight="500">
-            Saldo Anda
-          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
+            <Typography variant="subtitle2" fontWeight="500">
+              Saldo Anda
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              fontWeight="500"
+              sx={{
+                textTransform: 'capitalize',
+                display: { xs: 'block', sm: 'none' },
+              }}
+            >
+              {isLoadingUser ? <Skeleton /> : `${first_name} ${last_name}`}
+            </Typography>
+          </Box>
           <Typography variant="h4" fontWeight="600">
             {balanceLoading ? (
               <Skeleton width={200} />
