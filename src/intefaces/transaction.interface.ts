@@ -28,3 +28,20 @@ export interface TopUpData {
 }
 
 export type TopUpResponse = ApiResponse<TopUpData>;
+
+
+export interface HistoryTransaction {
+  "invoice_number": string,
+  "transaction_type": 'TOPUP' | 'PAYMENT',
+  "description": string,
+  "total_amount": number,
+  "created_on": string
+}
+
+export interface HistoryTransactionData {
+  "offset": number,
+  "limit": number,
+  "records": HistoryTransaction[],
+}
+
+export type HistoryTransactionResponse = ApiResponse<HistoryTransactionData>;

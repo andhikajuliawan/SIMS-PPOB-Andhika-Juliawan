@@ -1,5 +1,6 @@
 import api from './axiosInstance.ts';
 import type {
+  HistoryTransactionResponse,
   TopUpRequest,
   TopUpResponse,
   TransactionRequest,
@@ -12,8 +13,23 @@ export const transactionService = {
     return response.data;
   },
 
-  transaction: async (payload: TransactionRequest): Promise<TransactionResponse> => {
+  transaction: async (
+    payload: TransactionRequest
+  ): Promise<TransactionResponse> => {
     const response = await api.post('/transaction', payload);
+    return response.data;
+  },
+
+  getHistoryTransaction: async (
+    limit: number,
+    offset: number
+  ): Promise<HistoryTransactionResponse> => {
+    const response = await api.get('/transaction/history', {
+      params: {
+        limit,
+        offset,
+      },
+    });
     return response.data;
   },
 };

@@ -17,6 +17,7 @@ function MainLayout() {
   const dispatch = useAppDispatch();
   const listNavigation: NavProps[] = [
     { title: 'Top Up', path: '/top-up' },
+    { title: 'Transaction', path: '/transaction'},
     { title: 'Akun', path: '/account' },
   ];
 
