@@ -4,13 +4,13 @@ import Home from './pages/Home/Home.tsx';
 import AuthLayout from './layouts/AuthLayout.tsx';
 import Login from './pages/Login/Login.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Snackbar from './components/Snackbar';
 import { Provider } from 'react-redux';
 import { store } from './features/store.ts';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import MainLayout from './layouts/MainLayout.tsx';
 import Account from './pages/Account/Account.tsx';
 import Register from './pages/Register/Register.tsx';
-import { SnackbarProvider } from 'notistack';
 import Service from './pages/Service/Service.tsx';
 import TopUp from './pages/TopUp/TopUp.tsx';
 import Transaction from './pages/Transaction/Transaction.tsx';
@@ -49,9 +49,9 @@ function App() {
     <>
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <SnackbarProvider hideIconVariant>
+          <Snackbar>
             <RouterProvider router={router} />
-          </SnackbarProvider>
+          </Snackbar>
         </QueryClientProvider>
       </Provider>
     </>
