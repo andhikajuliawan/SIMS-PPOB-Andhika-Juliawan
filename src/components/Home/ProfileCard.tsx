@@ -28,7 +28,11 @@ function ProfileCard() {
   } = useAppSelector(selectUser);
   const [showBalance, setShowBalance] = useState(true);
 
-  const { data: balanceData, isLoading: balanceLoading } = useQuery({
+  const {
+    data: balanceData,
+    isLoading: balanceLoading,
+    isError,
+  } = useQuery({
     queryKey: ['balance'],
     queryFn: userService.getUserBalance,
   });
@@ -109,24 +113,33 @@ function ProfileCard() {
           <Typography variant="h4" fontWeight="600">
             {isLoadingBalance ? (
               <Skeleton width={200} />
+            ) : isError ? (
+              '-'
             ) : (
               `Rp ${showBalance ? balance.toLocaleString('id-ID') : '•••••••'}`
             )}
           </Typography>
         </Box>
-        <Typography variant="subtitle2" fontWeight="500">
-          lihat saldo{' '}
-          <IconButton
-            size="small"
-            sx={{ color: grey[50] }}
-            onClick={() => setShowBalance(!showBalance)}
-          >
-            {showBalance ? (
-              <VisibilityOutlinedIcon fontSize="inherit" />
-            ) : (
-              <VisibilityOffOutlinedIcon fontSize="inherit" />
-            )}
-          </IconButton>
+        <Typography variant="subtitle2" fontWeight="500" sx={{ display: 'flex', alignItems: 'center' }}>
+          {isError ? (
+            'Gagal memuat saldo'
+          ) : (
+            <>
+              {showBalance ? 'Tutup saldo' : 'Lihat saldo'}
+
+              <IconButton
+                size="small"
+                sx={{ color: grey[50], ml: 0.5 }}
+                onClick={() => setShowBalance(!showBalance)}
+              >
+                {showBalance ? (
+                  <VisibilityOutlinedIcon fontSize="inherit" />
+                ) : (
+                  <VisibilityOffOutlinedIcon fontSize="inherit" />
+                )}
+              </IconButton>
+            </>
+          )}
         </Typography>
       </Box>
     </Box>

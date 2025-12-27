@@ -12,7 +12,7 @@ function Transaction() {
   const queryClient = useQueryClient();
   const limit = 5;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
     useInfiniteQuery({
       queryKey: ['history-transaction'],
       queryFn: ({ pageParam = 0 }) =>
@@ -51,6 +51,8 @@ function Transaction() {
         <Typography variant="subtitle1" sx={{ fontWeight: '500' }}>
           Semua Transaksi
         </Typography>
+
+        {isError && <Typography variant="caption" color="primary">Gagal memuat transaksi</Typography>}
 
         {histories?.map((history) => (
           <Card

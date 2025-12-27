@@ -7,13 +7,15 @@ import { useNavigate } from 'react-router';
 
 function Home() {
   const navigate = useNavigate();
-  const { data: servicesData, isLoading: serviceLoading } = useQuery({
+  const { data: servicesData, isLoading: serviceLoading, isError: isServiceError } = useQuery({
     queryKey: ['services'],
     queryFn: informationService.getServices,
+    refetchOnMount: 'always',
   });
-  const { data: bannersData, isLoading: bannerLoading } = useQuery({
+  const { data: bannersData, isLoading: bannerLoading, isError: isBannerError } = useQuery({
     queryKey: ['banners'],
     queryFn: informationService.getBanners,
+    refetchOnMount: 'always',
   });
 
   return (
@@ -86,6 +88,7 @@ function Home() {
               </Box>
             ))}
       </Box>
+      {isServiceError && (<Typography variant="caption" color="primary">Gagal memuat layanan.</Typography>)}
 
       <Typography
         variant="subtitle1"
@@ -128,6 +131,7 @@ function Home() {
               />
             ))}
       </Box>
+      {isBannerError && (<Typography variant="caption" color="primary">Gagal memuat promo.</Typography>)}
     </Box>
   );
 }
