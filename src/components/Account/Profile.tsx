@@ -52,7 +52,6 @@ function Profile() {
       } else {
         const formData = new FormData();
         formData.append('file', file);
-        console.log(file);
         updateProfileImage(formData);
       }
     }
