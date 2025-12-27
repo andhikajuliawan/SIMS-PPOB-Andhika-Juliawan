@@ -1,9 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store.ts';
-import type {
-  User,
-  UserData,
-} from '../../intefaces/user.interface.ts';
+import type { User, UserData } from '../../intefaces/user.interface.ts';
 
 const initialState: User = {
   email: '',
@@ -11,6 +8,7 @@ const initialState: User = {
   last_name: '',
   profile_image: '',
   balance: 0,
+  showBalance: true,
   isLoadingUser: true,
   isLoadingBalance: true,
 };
@@ -34,11 +32,21 @@ export const userSlice = createSlice({
     setBalance: (state, action: PayloadAction<number>) => {
       state.balance = action.payload;
     },
+    setShowBalance: (state, action: PayloadAction<boolean>) => {
+      state.showBalance = action.payload;
+    },
     setBalanceLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoadingBalance = action.payload;
     },
   },
 });
 
-export const { setUser, setUserLoading, setProfileImage, setBalance, setBalanceLoading } = userSlice.actions;
+export const {
+  setUser,
+  setUserLoading,
+  setProfileImage,
+  setBalance,
+  setShowBalance,
+  setBalanceLoading,
+} = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;

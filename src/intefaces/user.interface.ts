@@ -6,6 +6,7 @@ export interface User {
   last_name: string;
   profile_image: string;
   balance: number;
+  showBalance: boolean;
   isLoadingUser: boolean;
   isLoadingBalance: boolean;
 }

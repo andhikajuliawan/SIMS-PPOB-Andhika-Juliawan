@@ -1,11 +1,12 @@
 import Box from '@mui/material/Box';
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '../../services/user.service.ts';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   selectUser,
   setBalance,
   setBalanceLoading,
+  setShowBalance,
 } from '../../features/user/userSlice.ts';
 import { useDispatch } from 'react-redux';
 import { Avatar, IconButton, Skeleton, Typography } from '@mui/material';
@@ -24,9 +25,9 @@ function ProfileCard() {
     profile_image,
     isLoadingUser,
     balance,
+    showBalance,
     isLoadingBalance,
   } = useAppSelector(selectUser);
-  const [showBalance, setShowBalance] = useState(true);
 
   const {
     data: balanceData,
@@ -120,7 +121,11 @@ function ProfileCard() {
             )}
           </Typography>
         </Box>
-        <Typography variant="subtitle2" fontWeight="500" sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography
+          variant="subtitle2"
+          fontWeight="500"
+          sx={{ display: 'flex', alignItems: 'center' }}
+        >
           {isError ? (
             'Gagal memuat saldo'
           ) : (
@@ -130,7 +135,7 @@ function ProfileCard() {
               <IconButton
                 size="small"
                 sx={{ color: grey[50], ml: 0.5 }}
-                onClick={() => setShowBalance(!showBalance)}
+                onClick={() => dispatch(setShowBalance(!showBalance))}
               >
                 {showBalance ? (
                   <VisibilityOutlinedIcon fontSize="inherit" />
