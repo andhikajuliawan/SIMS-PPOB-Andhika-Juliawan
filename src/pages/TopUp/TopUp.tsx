@@ -11,19 +11,23 @@ import type { AxiosError } from 'axios';
 import { transactionService } from '../../services/transaction.service.ts';
 import { formatRupiah, rupiahToNumber } from '../../utils/formatCurrency.ts';
 import type { TopUpForm } from '../../intefaces/transaction.interface.ts';
+import { useDispatch } from 'react-redux';
+import { setBalance } from '../../features/user/userSlice.ts';
 
 function TopUp() {
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const topUpOptions: number[] = [10000, 20000, 50000, 10000, 250000, 500000];
   const { mutate, isPending } = useMutation({
     mutationFn: transactionService.topUp,
     onSuccess: (data) => {
+      dispatch(setBalance(data.data.balance));
       void queryClient.invalidateQueries({ queryKey: ['balance'] });
       enqueueSnackbar(data.message, {
         variant: 'success',
         autoHideDuration: 2000,
       });
-      reset()
+      reset();
     },
     onError: (error: AxiosError<{ message: string }>) => {
       enqueueSnackbar(error.response?.data.message, {

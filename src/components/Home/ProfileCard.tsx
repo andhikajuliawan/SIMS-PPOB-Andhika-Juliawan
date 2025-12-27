@@ -18,8 +18,14 @@ import { getValidProfileImage } from '../../utils/imageHelper.ts';
 
 function ProfileCard() {
   const dispatch = useDispatch();
-  const { first_name, last_name, profile_image, isLoadingUser } =
-    useAppSelector(selectUser);
+  const {
+    first_name,
+    last_name,
+    profile_image,
+    isLoadingUser,
+    balance,
+    isLoadingBalance,
+  } = useAppSelector(selectUser);
   const [showBalance, setShowBalance] = useState(true);
 
   const { data: balanceData, isLoading: balanceLoading } = useQuery({
@@ -101,10 +107,10 @@ function ProfileCard() {
             </Typography>
           </Box>
           <Typography variant="h4" fontWeight="600">
-            {balanceLoading ? (
+            {isLoadingBalance ? (
               <Skeleton width={200} />
             ) : (
-              `Rp ${showBalance ? balanceData?.data.balance.toLocaleString('id-ID') : '•••••••'}`
+              `Rp ${showBalance ? balance.toLocaleString('id-ID') : '•••••••'}`
             )}
           </Typography>
         </Box>
