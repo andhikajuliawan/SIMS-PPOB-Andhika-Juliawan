@@ -7,9 +7,8 @@ function AuthLayout() {
     <Grid
       container
       sx={{
-        height: '100vh',
+        minHeight: '100vh',
         width: '100vw',
-        overflow: 'hidden',
         m: 0,
         p: 0,
       }}
@@ -28,6 +27,7 @@ function AuthLayout() {
             width: '100%',
             height: '100dvh',
             objectFit: 'cover',
+            display: { xs: 'none', md: 'block' },
           }}
         />
       </Grid>
